@@ -79,7 +79,11 @@ class UserService {
 
 	async getUserInfo(user: IUserTransfer) {
 		const userData = await prisma.user.findUnique({ where: { id: user.id } });
-		return userData;
+		if (!userData) {
+			throw ApiError.unauthorizedError();
+		}
+		const userDto = new UserDto(userData);
+		return userDto;
 	}
 }
 
