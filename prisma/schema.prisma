@@ -8,6 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum userStatus {
+  online
+  idle
+  offline
+  notdisturb
+}
+
 model User {
   id Int @id @default(autoincrement())
   email String @unique
@@ -17,6 +24,8 @@ model User {
   avatarUrl String? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  online Boolean @default(false)
+  status userStatus @default(online)
 
   tokens Tokens?
 
@@ -63,13 +72,13 @@ model Chat {
 }
 
 enum ChatRole {
-  MEMBER
-  ADMIN
+  member
+  admin
 }
 
 model ChatMember {
   id Int @id @default(autoincrement())
-  role ChatRole @default(MEMBER)
+  role ChatRole @default(member)
   joinedAt DateTime @default(now())
   
   userId Int
