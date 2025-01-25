@@ -4,5 +4,6 @@ namespace NodeJS {
 		DATABASE_URL: string;
 		JWT_ACCESS_SECRET_KEY: string;
 		JWT_REFRESH_SECRET_KEY: string;
+		ORIGIN: string;
 	}
 }
