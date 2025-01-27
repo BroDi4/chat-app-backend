@@ -95,7 +95,7 @@ class FriendService {
 			where: { id: userId },
 			include: {
 				friends: {
-					where: { online: isOnline },
+					where: { online: isOnline ? true : true || false },
 				},
 			},
 		});
