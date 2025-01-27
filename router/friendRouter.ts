@@ -13,7 +13,7 @@ friendRouter.delete(
 );
 
 friendRouter.post(
-	'/acceptreq:id',
+	'/acceptreq/:id',
 	authMiddleware,
 	friendController.acceptRequest
 );

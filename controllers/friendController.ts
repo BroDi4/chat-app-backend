@@ -5,14 +5,14 @@ import { ApiError } from '../exceptions/apiError';
 class FriendController {
 	async sendRequest(req: Request, res: Response, next: NextFunction) {
 		try {
-			const reciverId = req.params.id;
+			const reciverUniqueName = req.params.uniquename;
 			const userId = req.body.user.id;
 
-			if (!reciverId) {
+			if (!reciverUniqueName) {
 				throw ApiError.badRequest('Получатель не указан');
 			}
 
-			await friendService.sendRequest(userId, Number(reciverId));
+			await friendService.sendRequest(userId, reciverUniqueName);
 			res.json({ msg: 'Вы отправили запрос в друзья!' });
 		} catch (e) {
 			next(e);
@@ -65,9 +65,15 @@ class FriendController {
 	async getFriends(req: Request, res: Response, next: NextFunction) {
 		try {
 			const onlineStatus = req.params.status;
+			const name = req.query.username as string;
 			const userId = req.body.user.id;
+			console.log(name, onlineStatus);
 
-			const friends = await friendService.getFriends(onlineStatus, userId);
+			const friends = await friendService.getFriends(
+				onlineStatus,
+				userId,
+				name
+			);
 			res.json(friends);
 		} catch (e) {
 			next(e);

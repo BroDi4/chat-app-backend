@@ -25,14 +25,22 @@ class FriendService {
 		return request;
 	}
 
-	async sendRequest(userId: number, reciverId: number) {
-		await this.findUsers(userId, reciverId);
+	async sendRequest(userId: number, reciverName: string) {
+		const reciver = await prisma.user.findUnique({
+			where: { uniqueName: reciverName },
+		});
+
+		if (!reciver) {
+			throw ApiError.badRequest('Пользователь с таким именем не найден');
+		}
+
+		await this.findUsers(userId, reciver.id);
 
 		const existingRequest = await prisma.friendRequest.findFirst({
 			where: {
 				OR: [
-					{ sentById: userId, sentToId: reciverId },
-					{ sentById: reciverId, sentToId: userId },
+					{ sentById: userId, sentToId: reciver.id },
+					{ sentById: reciver.id, sentToId: userId },
 				],
 			},
 		});
@@ -44,7 +52,7 @@ class FriendService {
 		await prisma.friendRequest.create({
 			data: {
 				sentById: userId,
-				sentToId: reciverId,
+				sentToId: reciver.id,
 			},
 		});
 	}
@@ -88,14 +96,17 @@ class FriendService {
 		return requests;
 	}
 
-	async getFriends(status: string, userId: number) {
+	async getFriends(status: string, userId: number, username: string) {
 		const isOnline = status === 'true';
 
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
 			include: {
 				friends: {
-					where: { online: isOnline ? true : true || false },
+					where: {
+						...(isOnline ? { online: isOnline } : {}),
+						...(username ? { nickName: { contains: username } } : {}),
+					},
 				},
 			},
 		});
