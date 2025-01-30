@@ -93,7 +93,12 @@ class FriendService {
 			include: { sentBy: true },
 		});
 
-		return requests;
+		const response = requests.map(obj => ({
+			...obj,
+			sentBy: new UserDto(obj.sentBy),
+		}));
+
+		return response;
 	}
 
 	async getFriends(status: string, userId: number, username: string) {

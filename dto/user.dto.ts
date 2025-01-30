@@ -8,6 +8,7 @@ export class UserDto {
 	avatarUrl: string | null;
 	online: Boolean;
 	status: userStatus;
+	createdAt: Date;
 	constructor(model: User) {
 		this.id = model.id;
 		this.email = model.email;
@@ -16,5 +17,6 @@ export class UserDto {
 		this.avatarUrl = model.avatarUrl;
 		this.online = model.online;
 		this.status = model.status;
+		this.createdAt = model.createdAt;
 	}
 }

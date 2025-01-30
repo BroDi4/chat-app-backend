@@ -1,6 +1,7 @@
-import { NextFunction, Response, Request } from 'express';
-import { friendService } from '../services/friend.service';
+import { NextFunction, Request, Response } from 'express';
+
 import { ApiError } from '../exceptions/apiError';
+import { friendService } from '../services/friend.service';
 
 class FriendController {
 	async sendRequest(req: Request, res: Response, next: NextFunction) {
@@ -13,7 +14,7 @@ class FriendController {
 			}
 
 			await friendService.sendRequest(userId, reciverUniqueName);
-			res.json({ msg: 'Вы отправили запрос в друзья!' });
+			res.json({ message: 'Вы отправили запрос в друзья!' });
 		} catch (e) {
 			next(e);
 		}
@@ -29,7 +30,7 @@ class FriendController {
 			}
 
 			await friendService.declineRequest(Number(requestId), reciverId);
-			res.json({ msg: 'Запрос на добавления в друзья удален' });
+			res.json({ message: 'Запрос на добавления в друзья удален' });
 		} catch (e) {
 			next(e);
 		}
@@ -45,7 +46,7 @@ class FriendController {
 			}
 
 			await friendService.acceptRequest(Number(requestId), reciverId);
-			res.json({ msg: 'Запрос на добавление принят' });
+			res.json({ message: 'Запрос на добавление принят' });
 		} catch (e) {
 			next(e);
 		}
@@ -67,7 +68,6 @@ class FriendController {
 			const onlineStatus = req.params.status;
 			const name = req.query.username as string;
 			const userId = req.body.user.id;
-			console.log(name, onlineStatus);
 
 			const friends = await friendService.getFriends(
 				onlineStatus,
@@ -87,7 +87,7 @@ class FriendController {
 
 			await friendService.deleteFriend(userId, Number(friendId));
 
-			res.json({ msg: 'Друг был удален' });
+			res.json({ message: 'Друг был удален' });
 		} catch (e) {
 			next(e);
 		}

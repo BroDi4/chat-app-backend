@@ -42,7 +42,7 @@ class UserController {
 			const { refreshToken } = req.cookies;
 			await tokenService.deleteToken(refreshToken);
 			res.clearCookie('refreshToken');
-			res.json({ msg: 'Вы вышли из аккаунта' });
+			res.json({ message: 'Вы вышли из аккаунта' });
 		} catch (e) {
 			next(e);
 		}
@@ -63,7 +63,7 @@ class UserController {
 		try {
 			const { user } = req.body;
 			const userData = await userService.getUserInfo(user);
-			res.json({ userData });
+			res.json(userData);
 		} catch (e) {
 			next(e);
 		}
