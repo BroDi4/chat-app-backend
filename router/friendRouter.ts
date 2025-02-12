@@ -4,7 +4,11 @@ import { authMiddleware } from '../middleware/authMiddleware';
 
 export const friendRouter = Router();
 
-friendRouter.post('/sendreq/:id', authMiddleware, friendController.sendRequest);
+friendRouter.post(
+	'/sendreq/:uniquename',
+	authMiddleware,
+	friendController.sendRequest
+);
 
 friendRouter.delete(
 	'/deletereq/:id',
