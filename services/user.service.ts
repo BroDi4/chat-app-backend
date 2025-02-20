@@ -85,6 +85,10 @@ class UserService {
 		const userDto = new UserDto(userData);
 		return userDto;
 	}
+
+	async updateUser(id: number, data: User) {
+		await prisma.user.update({ where: { id: id }, data: { ...data } });
+	}
 }
 
 export const userService = new UserService();

@@ -68,6 +68,16 @@ class UserController {
 			next(e);
 		}
 	}
+
+	async update(req: Request, res: Response, next: NextFunction) {
+		try {
+			const {user, data} = req.body;
+			await userService.updateUser(user.id, data)
+			res.json({message: 'Данные обновлены'})
+		} catch (e) {
+			next(e)
+		}
+	}
 }
 
 export const userController = new UserController();
