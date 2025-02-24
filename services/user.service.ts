@@ -86,8 +86,12 @@ class UserService {
 		return userDto;
 	}
 
-	async updateUser(id: number, data: User) {
-		await prisma.user.update({ where: { id: id }, data: { ...data } });
+	async updateUser(id: number, data: Partial<User>) {
+		const user = await prisma.user.update({
+			where: { id: id },
+			data: { ...data },
+		});
+		return user;
 	}
 }
 
