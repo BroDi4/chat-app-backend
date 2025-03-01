@@ -13,6 +13,10 @@ export class ApiError extends Error {
 		return new ApiError(401, 'Пользователь не авторизован');
 	}
 
+	static notFoundError(message: string) {
+		return new ApiError(404, message);
+	}
+
 	static badRequest(message: string, errors: ValidationError[] = []) {
 		return new ApiError(400, message, errors);
 	}
