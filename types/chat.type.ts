@@ -1,8 +1,12 @@
 import { Chat, ChatRole, Message, User } from '@prisma/client';
 import { UserDto } from '../dto/user.dto';
 
-interface IMessages {
-	messages?: Message[];
+export interface IMessage extends Message {
+	user: User;
+}
+
+export interface IMessages {
+	messages?: IMessage[];
 }
 
 export interface IChat extends Chat, IMessages {
@@ -11,5 +15,4 @@ export interface IChat extends Chat, IMessages {
 
 export interface IChatRaw extends Chat, IMessages {
 	members: { user: User; role: ChatRole; joinedAt: Date }[];
-	messages?: Message[];
 }

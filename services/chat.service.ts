@@ -16,20 +16,24 @@ class ChatService {
 			interlocutor: chat.isGroup
 				? null
 				: chat.members
-						.map(member => ({
-							...new UserDto(member.user),
-							role: member.role,
-							joinedAt: member.joinedAt,
-						}))
+						.map(member => new UserDto(member.user))
 						.find(user => user.id !== userId) || null,
 		};
-		//transform member (UserDto & role for member)
 
 		if (isFullInfo) {
 			return {
 				...chatBaseInfo,
-				members: chat.members.map(member => member.user),
-				messages: chat.messages,
+				members: chat.members.map(member => ({
+					...new UserDto(member.user),
+					role: member.role,
+					joinedAt: member.joinedAt,
+				})),
+				messages:
+					chat.messages &&
+					chat.messages.map(message => ({
+						...message,
+						user: new UserDto(message.user),
+					})),
 			};
 		}
 
@@ -41,7 +45,6 @@ class ChatService {
 			where: { members: { some: { userId: userId } } },
 			include: {
 				members: {
-					select: { role: true, joinedAt: true },
 					include: { user: true },
 				},
 			},
@@ -54,10 +57,9 @@ class ChatService {
 		const chat = await prisma.chat.findUnique({
 			where: { id: chatId, members: { some: { userId } } },
 			include: {
-				messages: true,
+				messages: { include: { user: true } },
 				members: {
 					include: { user: true },
-					select: { role: true, joinedAt: true },
 				},
 			},
 		});

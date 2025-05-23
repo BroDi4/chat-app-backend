@@ -3,10 +3,11 @@ import { Server } from 'socket.io';
 import { userService } from '../services/user.service';
 import { IAuthSocket } from '../types/socket.type';
 import { friendService } from '../services/friend.service';
+import { chatService } from '../services/chat.service';
 
 export function initSocket(
 	server: http.Server,
-	corsOptions: { origin: string; credentials: boolean }
+	corsOptions: { origin: string; credentials: boolean },
 ) {
 	const io = new Server(server, {
 		cors: corsOptions,
@@ -26,6 +27,24 @@ export function initSocket(
 
 		friends.forEach(friend => {
 			socket.to(friend.id.toString()).emit('changed_user');
+		});
+
+		socket.on('join_chat', chatId => {
+			socket.join(chatId.toString());
+		});
+
+		socket.on('leave_chat', chatId => {
+			socket.leave(chatId.toString());
+		});
+
+		socket.on('send_message', async ({ chatId, message }) => {
+			const newMessage = await chatService.sendMessage(
+				userId,
+				Number(chatId),
+				message,
+			);
+
+			io.to(chatId.toString()).emit('new_message', newMessage);
 		});
 
 		socket.on('disconnect', async () => {
